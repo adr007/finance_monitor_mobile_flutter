@@ -23,4 +23,7 @@ class Pallete {
   static const Color greenTheme1 = Color(0XFF00B686);
   static const Color greenTheme2 = Color(0xFF22BD9A);
   static const Color greenTheme3 = Color(0xFF008686);
+
+  static const Color linerUp1 = Color(0xFF00BEF2);
+  static const Color linearDown1 = Color(0xFF92FE9D);
 }

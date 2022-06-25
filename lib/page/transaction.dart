@@ -14,9 +14,9 @@ class Transaction extends StatefulWidget {
 
 class _TransactionState extends State<Transaction> {
   Data data = Data();
-  final TransactionController transController = Get.put(TransactionController());
+  final TransactionController transController =
+      Get.put(TransactionController());
   String _selectedTrans = "0";
-
 
   Icon getStatusIcon(String tipe) {
     switch (tipe) {
@@ -42,7 +42,6 @@ class _TransactionState extends State<Transaction> {
     // TODO: implement initState
     super.initState();
     transController.refresh();
-
   }
 
   void selecTrans(String idTrans) {
@@ -100,12 +99,12 @@ class _TransactionState extends State<Transaction> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Pallete.backgroundColorDarkMode,
+      color: Pallete.backgroundColor,
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("images/bg-anime1.jpg"),
+            image: AssetImage("images/blur2.jpg"),
             alignment: Alignment.topRight,
           ),
         ),
@@ -122,8 +121,8 @@ class _TransactionState extends State<Transaction> {
                     child: Container(
                       decoration: BoxDecoration(
                           gradient: LinearGradient(colors: [
+                        Pallete.linerUp1,
                         Pallete.greenTheme2,
-                        Pallete.greenTheme3,
                       ])),
                       padding: EdgeInsets.only(
                           left: 10, top: 7, right: 20, bottom: 7),
@@ -141,13 +140,13 @@ class _TransactionState extends State<Transaction> {
             ),
             SizedBox(height: 10),
             Container(
-              height: 510,
+              height: 490,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(40),
                     topLeft: Radius.circular(40)),
-                color: Pallete.backgroundColorDarkMode,
+                color: Pallete.backgroundColor,
               ),
               child: Stack(
                 children: <Widget>[
@@ -163,7 +162,7 @@ class _TransactionState extends State<Transaction> {
                           return Center(
                             child: Image(
                               image: AssetImage("images/nodata1.png"),
-                              width: 200,
+                              width: 190,
                             ),
                           );
                         }
@@ -173,11 +172,13 @@ class _TransactionState extends State<Transaction> {
                           itemBuilder: (context, index) {
                             var _trans = transController.transList[index];
                             return buildTransItem(
-                                getStatusIcon(_trans['trans_status']),
-                                int.parse(_trans['trans_value'].toString()),
-                                _trans['sub_name'],
-                                _trans['trans_information'],
-                                _trans['trans_id'].toString());
+                              getStatusIcon(_trans['trans_status']),
+                              int.parse(_trans['trans_value'].toString()),
+                              _trans['sub_name'],
+                              _trans['trans_information'],
+                              _trans['trans_id'].toString(),
+                              _trans['trans_date'].toString(),
+                            );
                           },
                         );
                       }
@@ -193,7 +194,13 @@ class _TransactionState extends State<Transaction> {
   }
 
   GestureDetector buildTransItem(
-      Icon icon, int amount, String subAsset, String info, String idTrans) {
+    Icon icon,
+    int amount,
+    String subAsset,
+    String info,
+    String idTrans,
+    String date,
+  ) {
     return GestureDetector(
       onTap: () {
         _selectedTrans = idTrans;
@@ -210,8 +217,8 @@ class _TransactionState extends State<Transaction> {
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Pallete.backgroundSoftColorDarkMode,
-                      Colors.blueGrey.withOpacity(0.1),
+                      Colors.white,
+                      Colors.white10.withOpacity(0.1),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -246,28 +253,45 @@ class _TransactionState extends State<Transaction> {
                                 Text(
                                   Tools.currency(amount),
                                   style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600,
                                       fontSize: 15),
                                 ),
                                 SizedBox(width: 5),
                                 Text(
                                   "(" + subAsset + ")",
                                   style: TextStyle(
-                                      color: Pallete.greenTheme3, fontSize: 14),
+                                      color: Pallete.greenTheme2, fontSize: 14),
                                 ),
                               ],
                             ),
                             SizedBox(height: 3),
                             Container(
                               width: 250,
-                              child: Text(
-                                ": " + info,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: Colors.white.withOpacity(.7),
-                                    fontSize: 12),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    ": " + info,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.grey.withOpacity(.9),
+                                      fontSize: 12,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Text(
+                                    "" + date,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.grey.withOpacity(.9),
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -282,9 +306,9 @@ class _TransactionState extends State<Transaction> {
               top: 0,
               right: 0,
               child: GestureDetector(
-                onTap: (){
+                onTap: () {
                   _selectedTrans = idTrans;
-                  print("Delete "+_selectedTrans);
+                  print("Delete " + _selectedTrans);
                   showDeleteDialog(context, "Delete transaction data?");
                 },
                 child: Container(
@@ -317,8 +341,6 @@ class _TransactionState extends State<Transaction> {
     );
   }
 }
-
-
 
 class BestSellerClipper extends CustomClipper<Path> {
   @override

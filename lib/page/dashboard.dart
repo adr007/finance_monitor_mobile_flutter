@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:adr_finance_app/config/pallete.dart';
 import 'package:adr_finance_app/services/data.dart';
 import 'package:adr_finance_app/util/tools.dart';
 import 'package:flutter/material.dart';
 import 'package:adr_finance_app/util/color_icon_util.dart';
+import 'package:pie_chart/pie_chart.dart';
 
 class DashboardMain extends StatefulWidget {
   @override
@@ -19,14 +22,14 @@ class _DashboardMainState extends State<DashboardMain> {
   bool _isVisible = false;
   List asetData;
 
-  // Text buildTextLoadingStatus() {
-  //   return Text(
-  //     ".........",
-  //     style: TextStyle(
-  //       color: Colors.white,
-  //     ),
-  //   );
-  // }
+
+  Map<String, double> dataMap = {
+    "Income": 0,
+    "Spending": 0,
+    "Saving": 0,
+  };
+
+  Map<String, dynamic> dataChart;
 
   @override
   void initState() {
@@ -42,7 +45,13 @@ class _DashboardMainState extends State<DashboardMain> {
 
     asetData = summaryData['detail'];
 
-    print("CETAK LIST ASET");
+    dataChart = summaryData['thisMonth'];
+
+    dataMap = {
+      "Income": double.parse(dataChart['Income'].toString()),
+      "Spending": double.parse(dataChart['Spending'].toString()),
+      "Saving": double.parse(dataChart['Saving'].toString()),
+    };
 
     setState(() {
       _isLoading = false;
@@ -58,10 +67,10 @@ class _DashboardMainState extends State<DashboardMain> {
             Stack(
               children: [
                 Container(
-                  height: 330,
+                  height: 345,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage("images/bg-anime2.jpg"),
+                      image: AssetImage("images/night.jpg"),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -69,10 +78,10 @@ class _DashboardMainState extends State<DashboardMain> {
                 Opacity(
                   opacity: 0.9,
                   child: Container(
-                    height: 330,
+                    height: 350,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Pallete.greenTheme2, Pallete.greenTheme3],
+                        colors: [Pallete.greenTheme2, Colors.blueAccent],
                       ),
                       // color: Pallete.greenTheme3.withOpacity(0.85),
                     ),
@@ -179,18 +188,18 @@ class _DashboardMainState extends State<DashboardMain> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 // color: Pallete.backgroundColorDarkMode.withOpacity(0.9),
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("images/Bg1.png"),
-                    fit: BoxFit.cover,
-                  ),
-                  // gradient: LinearGradient(
-                  //   colors: [
-                  //     Pallete.backgroundColorDarkMode,
-                  //     Pallete.backgroundSoftColorDarkMode
-                  //   ],
-                  //   begin: Alignment.topLeft,
-                  //   end: Alignment.bottomRight,
+                  // image: DecorationImage(
+                  //   image: AssetImage("images/Bg1.png"),
+                  //   fit: BoxFit.cover,
                   // ),
+                  gradient: LinearGradient(
+                    colors: [
+                      Pallete.backgroundColor,
+                      Colors.grey.withOpacity(0.1)
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                 ),
                 child: _isLoading
                     ? Container(
@@ -201,14 +210,14 @@ class _DashboardMainState extends State<DashboardMain> {
                             "Loading .. ..",
                             style: TextStyle(
                               fontSize: 15,
-                              color: Colors.amber,
+                              color: Colors.lightBlueAccent,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       )
                     : ListView(
-                        padding: EdgeInsets.only(top: 60),
+                        padding: EdgeInsets.only(top: 85),
                         children: [
                           Text(
                             "Distributed Assets ",
@@ -227,7 +236,7 @@ class _DashboardMainState extends State<DashboardMain> {
                                 int.parse(i['amount'].toString()),
                                 80,
                                 ColorIconUtil.getColor(i['color'].toString())),
-                          SizedBox(height: 60),
+                          SizedBox(height: 30),
                           // buildPortfolioCard(Icons.business_center_sharp, "Stock",
                           //     10000000, 50, Colors.teal),
                           // buildPortfolioCard(Icons.layers, "Bank Savings", 10000000,
@@ -246,9 +255,9 @@ class _DashboardMainState extends State<DashboardMain> {
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
             width: MediaQuery.of(context).size.width * 0.85,
-            height: 160,
+            height: 210,
             decoration: BoxDecoration(
-              color: Pallete.backgroundSoftColorDarkMode,
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Pallete.greenTheme2.withOpacity(.2),
@@ -258,121 +267,148 @@ class _DashboardMainState extends State<DashboardMain> {
                 ),
               ],
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
+                topLeft: Radius.circular(2),
                 bottomLeft: Radius.circular(50),
               ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Income",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Icon(
-                              Icons.arrow_upward,
-                              color: Color(0xFF00838F),
-                            )
-                          ],
-                        ),
-                        Text(
-                          "Rp. 90.000.000",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 15,
-                              color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      width: 1,
-                      height: 50,
-                      color: Colors.grey,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Expenses",
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Icon(
-                              Icons.arrow_downward,
-                              color: Colors.redAccent,
-                            )
-                          ],
-                        ),
-                        Text(
-                          "Rp. 10.000.000",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 15,
-                              color: Colors.white),
-                        ),
-                      ],
-                    ),
+                Text(
+                  "This Month ..",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Pallete.linerUp1,
+                  ),
+                ),
+                PieChart(
+                  dataMap: dataMap,
+                  animationDuration: Duration(milliseconds: 800),
+                  chartLegendSpacing: 24,
+                  chartRadius: 110,
+                  colorList: <Color>[
+                    Colors.lightBlue.withOpacity(0.8),
+                    Colors.deepOrange.withOpacity(0.8),
+                    Colors.lightGreenAccent.withOpacity(0.8),
                   ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Your spent Rp. 15.000.000 this month",
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white,
+                  initialAngleInDegree: 0,
+                  chartType: ChartType.disc,
+                  ringStrokeWidth: 32,
+                  // centerText: "HYBRID",
+                  legendOptions: LegendOptions(
+                    showLegendsInRow: false,
+                    legendPosition: LegendPosition.right,
+                    showLegends: true,
+                    legendShape: BoxShape.rectangle,
+                    legendTextStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 3,
-                ),
-                Text(
-                  "Let's see the cost statistics for this period",
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white,
+                  chartValuesOptions: ChartValuesOptions(
+                    showChartValueBackground: true,
+                    showChartValues: true,
+                    showChartValuesInPercentage: false,
+                    showChartValuesOutside: false,
+                    decimalPlaces: 0,
+                    chartValueStyle: TextStyle(
+                      color: Colors.black45,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 10,
+                  // gradientList: ---To add gradient colors---
+                  // emptyColorGradient: ---Empty Color gradient---
                 ),
                 Container(
-                  height: 1,
-                  width: double.maxFinite,
-                  color: Colors.grey.withOpacity(0.5),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "Tell me more",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Pallete.greenTheme1),
+                  padding: EdgeInsets.only(
+                    top: 7,
+                    bottom: 7,
+                    left: 15,
+                    right: 7,
+                  ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: Colors.grey.withOpacity(0.2)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "Today Income",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.arrow_upward,
+                                color: Color(0xFF00838F),
+                                size: 18,
+                              )
+                            ],
+                          ),
+                          Text(
+                            _isLoading
+                                ? "......."
+                                : Tools.currency(
+                                    int.parse(
+                                      summaryData['todayIncome'].toString(),
+                                    ),
+                                  ),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15,
+                                color: Pallete.greenTheme2),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        width: 1,
+                        height: 30,
+                        color: Colors.grey,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                "Today Expenses",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.arrow_downward,
+                                color: Colors.redAccent,
+                                size: 18,
+                              )
+                            ],
+                          ),
+                          Text(
+                            _isLoading
+                                ? "......."
+                                : Tools.currency(
+                                    int.parse(
+                                      summaryData['todaySpending'].toString(),
+                                    ),
+                                  ),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 15,
+                                color: Colors.amber),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -390,7 +426,7 @@ class _DashboardMainState extends State<DashboardMain> {
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: Pallete.backgroundSoftColorDarkMode.withOpacity(0.9),
+        color: Colors.white.withOpacity(0.9),
         // border: Border(
         //   left: BorderSide(width: 1.5, color: color),
         // ),
@@ -430,16 +466,16 @@ class _DashboardMainState extends State<DashboardMain> {
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.blueGrey,
                       ),
                     ),
                     SizedBox(height: 5),
                     Text(
                       Tools.currency(amount),
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.normal,
                           fontSize: 16,
-                          color: Colors.grey),
+                          color: Colors.black45.withOpacity(0.6)),
                     ),
                   ],
                 ),

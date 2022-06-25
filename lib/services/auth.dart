@@ -23,6 +23,9 @@ class Auth {
         String userId = response.data['user']['user_id'].toString();
         this.storage.write(key: 'token', value: token);
         this.storage.write(key: 'userId', value: userId);
+        this.storage.write(key: 'userName', value: response.data['user']['user_name'].toString());
+        this.storage.write(key: 'userEmail', value: response.data['user']['user_email'].toString());
+        this.storage.write(key: 'userPhoto', value: response.data['user']['user_photo'].toString());
       }
       else {
         String msg = response.data['msg'].toString();
@@ -40,6 +43,18 @@ class Auth {
     String _token = await storage.read(key: 'token');
     try {
       Dio.Response response = await api().post('/logout', options: Dio.Options(headers: {'Authorization': 'Bearer $_token'}));
+      print("Proses Log out selesai");
+      cleanUp();
+      print("proses clean up selesai");
+      // notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void forceLogout () async {
+    try {
+      Dio.Response response = await api().post('/force-logout');
       print("Proses Log out selesai");
       cleanUp();
       print("proses clean up selesai");

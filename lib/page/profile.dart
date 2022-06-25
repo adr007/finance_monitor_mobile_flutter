@@ -32,7 +32,11 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Pallete.backgroundColorDarkMode,
+          gradient: LinearGradient(
+            colors: [Colors.greenAccent.withOpacity(0.5), Pallete.backgroundColor],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -77,7 +81,7 @@ class _ProfileState extends State<Profile> {
               Text(
                 _isLoading ? "........." : userData['user_email'],
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.grey,
                   fontSize: 14,
                 ),
               ),
@@ -95,7 +99,7 @@ class _ProfileState extends State<Profile> {
                     width: 290,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Pallete.greenTheme3,
+                        color: Pallete.greenTheme1,
                         width: 3,
                       ),
                       borderRadius: BorderRadius.circular(40),

@@ -10,7 +10,7 @@ class FormAsset extends StatefulWidget {
 }
 
 class _FormAssetState extends State<FormAsset> {
-  List assetsList = List();
+  List assetsList = [];
   Data data = new Data();
   String _selectedAsset = "1";
   String subId = "";
@@ -52,9 +52,9 @@ class _FormAssetState extends State<FormAsset> {
 
   void fillForm() {
     _selectedAsset = assetDetail['sub_id_asset'].toString();
-    _asetNameControl.text = assetDetail['sub_name'];
+    _asetNameControl.text = assetDetail['sub_name'].toString();
     _asetValueControl.text = assetDetail['sub_value'].toString();
-    _asetVendorControl.text = assetDetail['sub_vendor'];
+    _asetVendorControl.text = assetDetail['sub_vendor'].toString();
     subId = assetDetail['sub_id'].toString();
   }
 
@@ -93,11 +93,11 @@ class _FormAssetState extends State<FormAsset> {
     pr.style(
       message: 'Please Wait..',
       borderRadius: 10.0,
-      backgroundColor: Pallete.backgroundColorDarkMode,
+      backgroundColor: Pallete.backgroundColor,
       elevation: 10.0,
       insetAnimCurve: Curves.easeInOut,
       progressWidget: CircularProgressIndicator(),
-      messageTextStyle: TextStyle(color: Colors.white, fontSize: 15),
+      messageTextStyle: TextStyle(color: Colors.grey, fontSize: 15),
     );
 
     return Scaffold(
@@ -123,7 +123,7 @@ class _FormAssetState extends State<FormAsset> {
       ),
       body: _isLoadingGetAsset
           ? Container(
-              color: Pallete.backgroundColorDarkMode,
+              color: Pallete.backgroundColor,
               child: Center(
                 child: CircularProgressIndicator(
                   backgroundColor: Colors.amberAccent,
@@ -133,9 +133,13 @@ class _FormAssetState extends State<FormAsset> {
           : Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("images/Bg2.png"),
+                  image: AssetImage("images/Bg2-w.png"),
                   fit: BoxFit.cover,
                 ),
+                // gradient: LinearGradient(
+                //   colors: [Pallete.backgroundColor, Colors.white],
+                //   begin: Alignment.centerLeft,
+                //   end: Alignment.centerRight),
               ),
               child: Column(
                 children: [
@@ -143,9 +147,9 @@ class _FormAssetState extends State<FormAsset> {
                     height: 230,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
-                            colors: [Pallete.greenTheme3, Pallete.greenTheme2],
-                            end: Alignment.bottomCenter,
-                            begin: Alignment.topCenter),
+                            colors: [Pallete.linerUp1, Pallete.greenTheme2],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight),
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(100))),
                     child: Column(
@@ -177,8 +181,8 @@ class _FormAssetState extends State<FormAsset> {
                                 decoration: BoxDecoration(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20)),
-                                  color: Pallete.backgroundSoftColorDarkMode
-                                      .withOpacity(0.8),
+                                  color: Colors.grey
+                                      .withOpacity(0.2),
                                 ),
                                 padding: EdgeInsets.only(left: 20),
                                 child: Column(
@@ -242,7 +246,7 @@ class _FormAssetState extends State<FormAsset> {
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                           colors: [
-                                            Pallete.greenTheme3,
+                                            Pallete.linerUp1,
                                             Pallete.greenTheme2
                                           ],
                                           end: Alignment.centerLeft,
@@ -280,7 +284,7 @@ Widget _textInput({controller, hint, icon, isNumber = false}) {
     margin: EdgeInsets.only(top: 10),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(20)),
-      color: Pallete.backgroundSoftColorDarkMode.withOpacity(0.8),
+      color: Colors.grey.withOpacity(0.2),
     ),
     padding: EdgeInsets.only(left: 10),
     child: TextFormField(
@@ -291,11 +295,11 @@ Widget _textInput({controller, hint, icon, isNumber = false}) {
         border: InputBorder.none,
         hintText: hint,
         hintStyle: TextStyle(
-          color: Colors.white.withOpacity(0.5),
+          color: Colors.grey,
         ),
         prefixIcon: Icon(
           icon,
-          color: Colors.white,
+          color: Colors.grey,
         ),
       ),
       style: TextStyle(color: Colors.white),

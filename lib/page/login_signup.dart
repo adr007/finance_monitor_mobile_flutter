@@ -43,7 +43,7 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
       _token = await storage.read(key: 'token') ?? null;
       print(_token);
       if (_token != null) {
-        Get.off(HomePage(), transition: Transition.cupertino, duration: Duration(seconds: 1));
+        Get.off(HomePage(), transition: Transition.circularReveal, duration: Duration(seconds: 1));
         // Navigator.pushReplacement(context,
         //     MaterialPageRoute(builder: (context) {
         //       return HomePage();

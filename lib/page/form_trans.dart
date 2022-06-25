@@ -1,4 +1,5 @@
-import 'dart:convert';
+// import 'dart:convert';
+// import 'dart:developer';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:adr_finance_app/config/pallete.dart';
 import 'package:adr_finance_app/services/data.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:adr_finance_app/controllers/transaction_controller.dart';
 
 class FormTrans extends StatefulWidget {
   @override
@@ -13,8 +15,10 @@ class FormTrans extends StatefulWidget {
 }
 
 class _FormTransState extends State<FormTrans> {
-  List subAssetList = List();
+  List subAssetList = [];
+  List tagList = [];
   String _selectedSubAsset = "0";
+  String _selectedTag = "100";
   String _transTipe = "DOWN";
   String _selectedDate = DateTime.now().toString();
   bool _isLoading = false;
@@ -24,6 +28,7 @@ class _FormTransState extends State<FormTrans> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _transInfo = TextEditingController();
   TextEditingController _transValue = TextEditingController();
+  final TransactionController transController = Get.put(TransactionController());
   // TextEditingController _transDate = TextEditingController();
 
   void initState() {
@@ -37,10 +42,13 @@ class _FormTransState extends State<FormTrans> {
 
   void getSubAssetList() async {
     var jsonData = await Data().getSubAsset();
+    var jsonData2 = await Data().getAllTag();
     // print(jsonData);
     setState(() {
       subAssetList = jsonData;
+      tagList = jsonData2;
       _selectedSubAsset = subAssetList[0]['sub_id'].toString();
+      _selectedTag = tagList[tagList.length-1]['tag_kode'].toString();
       _isLoading = false;
     });
   }
@@ -50,6 +58,7 @@ class _FormTransState extends State<FormTrans> {
     Map creds = {
       'trans_id_sub_asset': _selectedSubAsset,
       'trans_status': _transTipe,
+      'trans_tag': _selectedTag,
       'trans_information': _transInfo.text,
       'trans_value': _transValue.text,
       'trans_date': _selectedDate,
@@ -58,6 +67,7 @@ class _FormTransState extends State<FormTrans> {
     Map<String, dynamic> response = await data.saveTransaction(creds: creds);
     // print(response);
     if (response['status']) {
+      transController.refresh();
       Get.back(result: 'isFromTransPage');
     } else {
       print("Failed");
@@ -99,6 +109,7 @@ class _FormTransState extends State<FormTrans> {
           ),
           onPressed: () {
             // Navigator.pop(context);
+            transController.refresh();
             Get.back(result: 'isBack');
           },
         ),
@@ -106,19 +117,19 @@ class _FormTransState extends State<FormTrans> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("images/Bg2.png"),
+            image: AssetImage("images/Bg2-w.png"),
             fit: BoxFit.cover,
           ),
         ),
         child: Column(
           children: [
             Container(
-              height: 230,
+              height: 240,
               decoration: BoxDecoration(
                   gradient: LinearGradient(
-                      colors: [Pallete.greenTheme3, Pallete.greenTheme2],
-                      end: Alignment.bottomCenter,
-                      begin: Alignment.topCenter),
+                      colors: [Pallete.linerUp1, Pallete.greenTheme2],
+                      end: Alignment.centerLeft,
+                      begin: Alignment.centerRight),
                   borderRadius:
                       BorderRadius.only(bottomLeft: Radius.circular(100))),
               child: Column(
@@ -149,8 +160,8 @@ class _FormTransState extends State<FormTrans> {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Pallete.backgroundSoftColorDarkMode
-                                .withOpacity(0.8),
+                            color: Pallete.backgroundColor
+                                .withOpacity(0.7),
                           ),
                           padding: EdgeInsets.only(left: 20),
                           child: Column(
@@ -175,6 +186,42 @@ class _FormTransState extends State<FormTrans> {
                                   onChanged: (newVal) {
                                     setState(() {
                                       _selectedSubAsset = newVal;
+                                    });
+                                  },
+                                ),
+                              ),
+                              DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  items: tagList.map((x) {
+                                    return DropdownMenuItem(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            WidgetSpan(
+                                              child: Icon(
+                                                Icons.tag,
+                                                color: Colors.amber,
+                                                size: 17,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: x['tag_name'].toString(),
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      value: x['tag_kode'].toString(),
+                                    );
+                                  }).toList(),
+                                  value: _selectedTag,
+                                  onChanged: (newVal) {
+                                    setState(() {
+                                      _selectedTag = newVal;
                                     });
                                   },
                                 ),
@@ -216,14 +263,14 @@ class _FormTransState extends State<FormTrans> {
                                               child: Icon(
                                                 Icons.download_outlined,
                                                 color: Colors.red,
-                                                size: 19,
+                                                size: 17,
                                               ),
                                             ),
                                             TextSpan(
                                               text: "Spending",
                                               style: TextStyle(
                                                 color: Colors.grey,
-                                                fontSize: 17,
+                                                fontSize: 15,
                                               ),
                                             ),
                                           ],
@@ -259,7 +306,7 @@ class _FormTransState extends State<FormTrans> {
                           margin: EdgeInsets.only(top: 10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Pallete.backgroundSoftColorDarkMode
+                            color: Pallete.backgroundColor
                                 .withOpacity(0.8),
                           ),
                           child: DateTimeField(
@@ -270,8 +317,12 @@ class _FormTransState extends State<FormTrans> {
                                 firstDate: DateTime(2021),
                                 initialDate: currentValue ?? DateTime.now(),
                                 lastDate: DateTime(2025),
+                              // ignore: missing_return
                               ).then((selectedDate) {
-                                _selectedDate = selectedDate.toString();
+                                setState(() {
+                                  _selectedDate = selectedDate.toString();
+                                  return 0;
+                                });
                               });
                             },
                             initialValue: DateTime.now(),
@@ -282,7 +333,7 @@ class _FormTransState extends State<FormTrans> {
                                   EdgeInsets.only(left: 10, top: 15),
                               prefixIcon: Icon(
                                 Icons.date_range,
-                                color: Colors.white,
+                                color: Colors.grey,
                               ),
                               prefixIconConstraints:
                                   BoxConstraints(minWidth: 60),
@@ -306,11 +357,11 @@ class _FormTransState extends State<FormTrans> {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                     colors: [
-                                      Pallete.greenTheme3,
+                                      Pallete.linerUp1,
                                       Pallete.greenTheme2
                                     ],
-                                    end: Alignment.centerLeft,
-                                    begin: Alignment.centerRight),
+                                    end: Alignment.centerRight,
+                                    begin: Alignment.centerLeft),
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(100),
                                 ),
@@ -344,7 +395,7 @@ Widget _textInput({controller, hint, icon, isNumber = false}) {
     margin: EdgeInsets.only(top: 10),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.all(Radius.circular(20)),
-      color: Pallete.backgroundSoftColorDarkMode.withOpacity(0.8),
+      color: Pallete.backgroundColor.withOpacity(0.8),
     ),
     padding: EdgeInsets.only(left: 10),
     child: TextFormField(
@@ -355,14 +406,14 @@ Widget _textInput({controller, hint, icon, isNumber = false}) {
         border: InputBorder.none,
         hintText: hint,
         hintStyle: TextStyle(
-          color: Colors.white.withOpacity(0.5),
+          color: Colors.grey,
         ),
         prefixIcon: Icon(
           icon,
-          color: Colors.white,
+          color: Colors.grey,
         ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.grey),
     ),
   );
 }

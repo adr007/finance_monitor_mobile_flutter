@@ -104,7 +104,7 @@ class _AssetPageState extends State<AssetPage> {
           // color: Pallete.greenTheme1,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF22BD9A), Color(0xFF008686)],
+              colors: [Pallete.linerUp1, Pallete.greenTheme2],
             ),
           ),
           child: Column(
@@ -115,10 +115,6 @@ class _AssetPageState extends State<AssetPage> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: () async {
-                      // final res = await Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) {
-                      //   return FormAsset();
-                      // }));
                       String res = await Get.to<String>(
                         () => FormAsset(),
                         transition: Transition.upToDown,
@@ -140,9 +136,9 @@ class _AssetPageState extends State<AssetPage> {
                       ),
                     ),
                     icon: Icon(
-                      Icons.add_box_outlined,
+                      Icons.add_circle_outline,
                     ),
-                    label: Text("Add New Asset"),
+                    label: Text("New Asset"),
                   ),
                 ],
               ),
@@ -158,7 +154,7 @@ class _AssetPageState extends State<AssetPage> {
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.only(top: 30, right: 20, left: 20),
                 decoration: BoxDecoration(
-                  color: Pallete.backgroundColorDarkMode,
+                  color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(40),
                     topRight: Radius.circular(40),
@@ -168,7 +164,7 @@ class _AssetPageState extends State<AssetPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "List of Distributed Assets",
+                      "Distributed Assets",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -181,7 +177,7 @@ class _AssetPageState extends State<AssetPage> {
                       padding: EdgeInsets.symmetric(horizontal: 15),
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
-                        color: Pallete.backgroundSoftColorDarkMode,
+                        color: Pallete.backgroundColor,
                         borderRadius: BorderRadius.only(
                           topRight: Radius.circular(10),
                           topLeft: Radius.circular(10),
@@ -289,7 +285,7 @@ class _AssetPageState extends State<AssetPage> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Colors.black45,
                     ),
                   ),
                   SizedBox(height: 7),
@@ -329,7 +325,7 @@ class _AssetPageState extends State<AssetPage> {
           PopupMenuButton(
             child: Icon(
               Icons.more_vert,
-              color: Colors.white,
+              color: Colors.grey,
             ),
             color: Pallete.greenTheme2,
             onSelected: setSelectedAsset,

@@ -147,4 +147,32 @@ class Data {
     }
   }
 
+  Future<Map<String, dynamic>> doConvert({creds}) async {
+    String token = await storage.read(key: 'token') ?? "";
+    String link = "/sub-asset/convert";
+    try {
+      Dio.Response response = await api().post(link, data: creds, options: Dio.Options(headers: {'Authorization': 'Bearer $token'}));
+      // print(json.decode(response.data.toString()));
+      // print(response);
+      return response.data;
+    } catch(e){
+      print("ERRROR");
+      print(e);
+      return null;
+    }
+  }
+
+  Future<List<dynamic>> getAllTag() async {
+    String token = await storage.read(key: 'token') ?? "";
+    try {
+      Dio.Response response = await api().post('/tag/getAll', options: Dio.Options(headers: {'Authorization': 'Bearer $token'}));
+      // print(json.decode(response.data.toString()));
+      return response.data['data'];
+    } catch(e){
+      print("ERRROR");
+      print(e);
+      return null;
+    }
+  }
+
 }
