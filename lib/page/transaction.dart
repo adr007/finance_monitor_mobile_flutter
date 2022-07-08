@@ -2,9 +2,9 @@ import 'package:adr_finance_app/config/pallete.dart';
 import 'package:adr_finance_app/controllers/transaction_controller.dart';
 import 'package:adr_finance_app/services/data.dart';
 import 'package:adr_finance_app/util/tools.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 
 class Transaction extends StatefulWidget {
@@ -17,6 +17,7 @@ class _TransactionState extends State<Transaction> {
   final TransactionController transController =
       Get.put(TransactionController());
   String _selectedTrans = "0";
+  double screen_width;
 
   Icon getStatusIcon(String tipe) {
     switch (tipe) {
@@ -98,6 +99,7 @@ class _TransactionState extends State<Transaction> {
 
   @override
   Widget build(BuildContext context) {
+    screen_width = MediaQuery.of(context).size.width;
     return Container(
       color: Pallete.backgroundColor,
       child: Container(
@@ -139,52 +141,55 @@ class _TransactionState extends State<Transaction> {
               ),
             ),
             SizedBox(height: 10),
-            Container(
-              height: 490,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(40),
-                    topLeft: Radius.circular(40)),
-                color: Pallete.backgroundColor,
-              ),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Obx(() {
-                      if (transController.isLoading.value) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        if (transController.transList.length <= 0) {
+            Expanded(
+              child: Container(
+                height: 490,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(40),
+                      topLeft: Radius.circular(40)),
+                  color: Pallete.backgroundColor,
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Obx(() {
+                        if (transController.isLoading.value) {
                           return Center(
-                            child: Image(
-                              image: AssetImage("images/nodata1.png"),
-                              width: 190,
-                            ),
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          if (transController.transList.length <= 0) {
+                            return Center(
+                              child: Image(
+                                image: AssetImage("images/nodata1.png"),
+                                width: 190,
+                              ),
+                            );
+                          }
+                          return ListView.builder(
+                            padding: EdgeInsets.only(top: 10),
+                            itemCount: transController.transList.length,
+                            itemBuilder: (context, index) {
+                              var _trans = transController.transList[index];
+                              return buildTransItem(
+                                getStatusIcon(_trans['trans_status']),
+                                int.parse(_trans['trans_value'].toString()),
+                                _trans['sub_name'],
+                                _trans['trans_information'],
+                                _trans['trans_id'].toString(),
+                                _trans['trans_date'].toString(),
+                                _trans['tag']['tag_name'].toString(),
+                              );
+                            },
                           );
                         }
-                        return ListView.builder(
-                          padding: EdgeInsets.only(top: 10),
-                          itemCount: transController.transList.length,
-                          itemBuilder: (context, index) {
-                            var _trans = transController.transList[index];
-                            return buildTransItem(
-                              getStatusIcon(_trans['trans_status']),
-                              int.parse(_trans['trans_value'].toString()),
-                              _trans['sub_name'],
-                              _trans['trans_information'],
-                              _trans['trans_id'].toString(),
-                              _trans['trans_date'].toString(),
-                            );
-                          },
-                        );
-                      }
-                    }),
-                  ),
-                ],
+                      }),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -200,6 +205,7 @@ class _TransactionState extends State<Transaction> {
     String info,
     String idTrans,
     String date,
+    String tag,
   ) {
     return GestureDetector(
       onTap: () {
@@ -267,19 +273,27 @@ class _TransactionState extends State<Transaction> {
                             ),
                             SizedBox(height: 3),
                             Container(
-                              width: 250,
+                              width: 260,
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    ": " + info,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.grey.withOpacity(.9),
-                                      fontSize: 12,
-                                      overflow: TextOverflow.ellipsis,
+                                  Container(
+                                    width: 170,
+                                    child: Tooltip(
+                                      verticalOffset: 20,
+                                      preferBelow: false,
+                                      message: "(" + tag + ") " + info,
+                                      child: Text(
+                                        ": " + info,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.grey.withOpacity(.9),
+                                          fontSize: 12,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   Text(

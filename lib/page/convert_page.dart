@@ -16,6 +16,7 @@ class _ConvertPageState extends State<ConvertPage> {
   String _selectedSubAsset2 = "0";
   bool _isLoading = true;
   ProgressDialog pr;
+  bool _isAda = false;
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController _transValue = TextEditingController();
@@ -24,21 +25,25 @@ class _ConvertPageState extends State<ConvertPage> {
   void getSubAssetList() async {
     var jsonData = await Data().getSubAsset();
     // print(jsonData);
+
     setState(() {
       subAssetList = jsonData;
-      _selectedSubAsset = subAssetList[0]['sub_id'].toString();
-      _selectedSubAsset2 = subAssetList[0]['sub_id'].toString();
+      if (jsonData.length > 0) {
+        _isAda = true;
+        _selectedSubAsset = subAssetList[0]['sub_id'].toString();
+        _selectedSubAsset2 = subAssetList[0]['sub_id'].toString();
+      }
       _isLoading = false;
     });
   }
 
   void initState() {
     super.initState();
-    _isLoading = true;
+    // _isLoading = true;
     getSubAssetList();
   }
 
-  void gasConvert() async {
+  Future<void> gasConvert() async {
     _isLoading = true;
     Data data = new Data();
     Map creds = {
@@ -54,9 +59,7 @@ class _ConvertPageState extends State<ConvertPage> {
       subAssetController.refresh();
       Get.back(result: 'isFromConvert');
     } else {
-      setState(() {
-
-      });
+      setState(() {});
       print("Failed");
     }
   }
@@ -154,215 +157,237 @@ class _ConvertPageState extends State<ConvertPage> {
                     child: SingleChildScrollView(
                       child: Container(
                         margin: EdgeInsets.only(left: 20, right: 20, top: 30),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "From :",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                      color: Pallete.backgroundColor
-                                          .withOpacity(0.7),
-                                    ),
-                                    padding: EdgeInsets.only(left: 20),
-                                    child: Column(
+                        child: _isAda
+                            ? Form(
+                                key: _formKey,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                            isExpanded: true,
-                                            items: subAssetList.map((x) {
-                                              return DropdownMenuItem(
-                                                child: Text(
-                                                  x['sub_name'].toString() +
-                                                      " [" +
-                                                      x['asset_name']
-                                                          .toString() +
-                                                      "]",
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                value: x['sub_id'].toString(),
-                                              );
-                                            }).toList(),
-                                            value: _selectedSubAsset,
-                                            onChanged: (newVal) {
-                                              setState(() {
-                                                _selectedSubAsset = newVal;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "To :",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                      color: Pallete.backgroundColor
-                                          .withOpacity(0.7),
-                                    ),
-                                    padding: EdgeInsets.only(left: 20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        DropdownButtonHideUnderline(
-                                          child: DropdownButton(
-                                            isExpanded: true,
-                                            items: subAssetList.map((x) {
-                                              return DropdownMenuItem(
-                                                child: Text(
-                                                  x['sub_name'].toString() +
-                                                      " [" +
-                                                      x['asset_name']
-                                                          .toString() +
-                                                      "]",
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                                value: x['sub_id'].toString(),
-                                              );
-                                            }).toList(),
-                                            value: _selectedSubAsset2,
-                                            onChanged: (newVal) {
-                                              setState(() {
-                                                _selectedSubAsset2 = newVal;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Value :",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                      color: Colors.amber.withOpacity(0.7),
-                                    ),
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: TextFormField(
-                                      controller: _transValue,
-                                      validator: (value) => value.isEmpty
-                                          ? "Must be filled"
-                                          : null,
-                                      keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "Value",
-                                        hintStyle: TextStyle(
-                                          color: Colors.white,
-                                          height: 1.5,
-                                        ),
-                                        prefixIcon: Icon(
-                                          Icons.monetization_on_outlined,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 1),
-                              Container(
-                                margin: EdgeInsets.only(top: 30),
-                                height: 45,
-                                child: InkWell(
-                                  onTap: () async {
-                                    if (_formKey.currentState.validate()) {
-                                      await pr.show();
-                                      await gasConvert();
-                                      await pr.hide();
-                                    }
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 10,
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Pallete.linerUp1,
-                                            Pallete.greenTheme2
-                                          ],
-                                          end: Alignment.centerRight,
-                                          begin: Alignment.centerLeft),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.save,
-                                          color: Colors.white,
-                                          size: 19,
-                                        ),
-                                        SizedBox(width: 8),
                                         Text(
-                                          "Save",
+                                          "From :",
                                           style: TextStyle(
-                                            fontSize: 19,
-                                            color: Colors.white,
+                                            color: Colors.grey,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)),
+                                            color: Pallete.backgroundColor
+                                                .withOpacity(0.7),
+                                          ),
+                                          padding: EdgeInsets.only(left: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              DropdownButtonHideUnderline(
+                                                child: DropdownButton(
+                                                  isExpanded: true,
+                                                  items: subAssetList.map((x) {
+                                                    return DropdownMenuItem(
+                                                      child: Text(
+                                                        x['sub_name']
+                                                                .toString() +
+                                                            " [" +
+                                                            x['asset_name']
+                                                                .toString() +
+                                                            "]",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                      value: x['sub_id']
+                                                          .toString(),
+                                                    );
+                                                  }).toList(),
+                                                  value: _selectedSubAsset,
+                                                  onChanged: (newVal) {
+                                                    setState(() {
+                                                      _selectedSubAsset =
+                                                          newVal;
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
+                                    SizedBox(height: 20),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "To :",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)),
+                                            color: Pallete.backgroundColor
+                                                .withOpacity(0.7),
+                                          ),
+                                          padding: EdgeInsets.only(left: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              DropdownButtonHideUnderline(
+                                                child: DropdownButton(
+                                                  isExpanded: true,
+                                                  items: subAssetList.map((x) {
+                                                    return DropdownMenuItem(
+                                                      child: Text(
+                                                        x['sub_name']
+                                                                .toString() +
+                                                            " [" +
+                                                            x['asset_name']
+                                                                .toString() +
+                                                            "]",
+                                                        style: TextStyle(
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                      value: x['sub_id']
+                                                          .toString(),
+                                                    );
+                                                  }).toList(),
+                                                  value: _selectedSubAsset2,
+                                                  onChanged: (newVal) {
+                                                    setState(() {
+                                                      _selectedSubAsset2 =
+                                                          newVal;
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 20),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Value :",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(top: 10),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)),
+                                            color:
+                                                Colors.amber.withOpacity(0.7),
+                                          ),
+                                          padding: EdgeInsets.only(left: 10),
+                                          child: TextFormField(
+                                            controller: _transValue,
+                                            validator: (value) => value.isEmpty
+                                                ? "Must be filled"
+                                                : null,
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "Value",
+                                              hintStyle: TextStyle(
+                                                color: Colors.white,
+                                                height: 1.5,
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons.monetization_on_outlined,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(height: 1),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 30),
+                                      height: 45,
+                                      child: InkWell(
+                                        onTap: () async {
+                                          if (_formKey.currentState
+                                              .validate()) {
+                                            await pr.show();
+                                            await gasConvert();
+                                            await pr.hide();
+                                          }
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          height: 10,
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                                colors: [
+                                                  Pallete.linerUp1,
+                                                  Pallete.greenTheme2
+                                                ],
+                                                end: Alignment.centerRight,
+                                                begin: Alignment.centerLeft),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.save,
+                                                color: Colors.white,
+                                                size: 19,
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                "Save",
+                                                style: TextStyle(
+                                                  fontSize: 19,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Center(
+                                child: Text(
+                                  "Asset is empty",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 18,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
                       ),
                     ),
                   ),

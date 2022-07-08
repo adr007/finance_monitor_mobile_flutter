@@ -4,7 +4,7 @@ import 'package:get/state_manager.dart';
 
 class SubAssetController extends GetxController {
   var isLoading = true.obs;
-  var subAssetList = List<dynamic>().obs;
+  var subAssetList = <dynamic>[].obs;
   Data data = Data();
 
   @override

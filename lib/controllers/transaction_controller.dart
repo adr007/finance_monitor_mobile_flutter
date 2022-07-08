@@ -3,7 +3,7 @@ import 'package:get/state_manager.dart';
 
 class TransactionController extends GetxController {
   var isLoading = true.obs;
-  var transList = List<dynamic>().obs;
+  var transList = <dynamic>[].obs;
   Data data = Data();
 
   @override
@@ -17,6 +17,7 @@ class TransactionController extends GetxController {
   void refresh() {
     // TODO: implement refresh
     fetchTransaction();
+    print(transList);
     super.refresh();
   }
 

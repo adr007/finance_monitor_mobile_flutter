@@ -1,5 +1,6 @@
+import 'package:adr_finance_app/config/pallete.dart';
 import 'package:adr_finance_app/page/login_signup.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -64,7 +65,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
               child: Text("Loading.."),
             )
           : Container(
-              color: Colors.blueAccent,
+              color: Pallete.greenTheme3,
               child: ListView(
                 children: [
                   Container(
@@ -81,6 +82,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           children: [
                             Text(
                               userName,
+                              overflow: TextOverflow.ellipsis,
                               style:
                                   TextStyle(fontSize: 20, color: Colors.white),
                             ),
@@ -94,11 +96,29 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           ],
                         ),
                         Spacer(),
-                        CircleAvatar(
-                          radius: 24,
-                          backgroundColor: Color.fromRGBO(30, 60, 168, 1),
-                          child: Icon(Icons.add_comment_outlined,
-                              color: Colors.white),
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => const AboutDialog(
+                                applicationIcon: CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: AssetImage("images/LOGO1.png"),
+                                ),
+                                applicationName: "ADR Fm",
+                                applicationVersion: "Version 2.2",
+                                children: [
+                                  Text("ADR Finance Monitor Version 2.2 by Artono Dwi R")
+                                ],
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 24,
+                            backgroundColor: Pallete.greenTheme2,
+                            child:
+                                Icon(Icons.info_outlined, color: Colors.white),
+                          ),
                         )
                       ],
                     ),
@@ -106,18 +126,18 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   Divider(
                     color: Colors.white70,
                   ),
-                  buildMenuItem(
-                    text: "Home",
-                    icon: Icons.home,
-                    onCliked: () => selectedItem(context, 0),
-                  ),
+                  // buildMenuItem(
+                  //   text: "Home",
+                  //   icon: Icons.home,
+                  //   onCliked: () => selectedItem(context, 0),
+                  // ),
                   buildMenuItem(
                     text: "Report",
                     icon: Icons.area_chart_rounded,
                     onCliked: () => _launchUrl(context),
                   ),
                   buildMenuItem(
-                    text: "Profile",
+                    text: "Profile (Coming Soon)",
                     icon: Icons.person,
                     onCliked: () => selectedItem(context, 1),
                   ),

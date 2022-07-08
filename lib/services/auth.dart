@@ -14,7 +14,33 @@ class Auth {
 
   final storage = new FlutterSecureStorage();
 
-  void login (BuildContext context, Map creds) async {
+  Future<void> regis (BuildContext context, Map creds) async {
+    try {
+      Dio.Response response = await api().post('/register', data: creds);
+
+      if (response.data['status']) {
+        String token = response.data['token'].toString();
+        String userId = response.data['user']['user_id'].toString();
+        this.storage.write(key: 'token', value: token);
+        this.storage.write(key: 'userId', value: userId);
+        this.storage.write(key: 'userName', value: response.data['user']['user_name'].toString());
+        this.storage.write(key: 'userEmail', value: response.data['user']['user_email'].toString());
+        this.storage.write(key: 'userPhoto', value: response.data['user']['user_photo'].toString());
+      }
+      else {
+        String msg = response.data['msg'].toString();
+        DialogAuth.show(context, msg);
+      }
+
+      // return false;
+    } catch (e) {
+      DialogAuth.show(context, "System Error");
+      print(e);
+      // return false;
+    }
+  }
+
+  Future<void> login (BuildContext context, Map creds) async {
     try {
       Dio.Response response = await api().post('/login', data: creds);
 
@@ -34,15 +60,16 @@ class Auth {
 
       // return false;
     } catch (e) {
+      DialogAuth.show(context, "System Error");
       print(e);
       // return false;
     }
   }
 
-  void logout () async {
+  Future<void> logout () async {
     String _token = await storage.read(key: 'token');
     try {
-      Dio.Response response = await api().post('/logout', options: Dio.Options(headers: {'Authorization': 'Bearer $_token'}));
+      await api().post('/logout', options: Dio.Options(headers: {'Authorization': 'Bearer $_token'}));
       print("Proses Log out selesai");
       cleanUp();
       print("proses clean up selesai");
@@ -52,9 +79,9 @@ class Auth {
     }
   }
 
-  void forceLogout () async {
+  Future<void> forceLogout () async {
     try {
-      Dio.Response response = await api().post('/force-logout');
+      await api().post('/force-logout');
       print("Proses Log out selesai");
       cleanUp();
       print("proses clean up selesai");
@@ -64,7 +91,7 @@ class Auth {
     }
   }
 
-  void cleanUp() async {
+  Future<void> cleanUp() async {
     await storage.deleteAll();
   }
 

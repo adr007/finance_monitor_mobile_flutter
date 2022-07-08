@@ -1,4 +1,4 @@
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'package:adr_finance_app/config/pallete.dart';
 import 'package:adr_finance_app/services/data.dart';
@@ -250,12 +250,12 @@ class _DashboardMainState extends State<DashboardMain> {
           ],
         ),
         Positioned(
-          top: 215,
+          top: 210,
           right: 0,
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
             width: MediaQuery.of(context).size.width * 0.85,
-            height: 210,
+            height: 215,
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [

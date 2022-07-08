@@ -29,11 +29,11 @@ class _FormAssetState extends State<FormAsset> {
   @override
   void initState() {
     super.initState();
+    getAssetsList();
     selectedAsset = Get.arguments;
     if (selectedAsset != null) {
       getSelectedAsset(selectedAsset[0]);
     }
-    getAssetsList();
   }
 
   void getSelectedAsset(String idSub) async {
@@ -51,11 +51,13 @@ class _FormAssetState extends State<FormAsset> {
   }
 
   void fillForm() {
-    _selectedAsset = assetDetail['sub_id_asset'].toString();
-    _asetNameControl.text = assetDetail['sub_name'].toString();
-    _asetValueControl.text = assetDetail['sub_value'].toString();
-    _asetVendorControl.text = assetDetail['sub_vendor'].toString();
-    subId = assetDetail['sub_id'].toString();
+    setState(() {
+      _selectedAsset = assetDetail['sub_id_asset'].toString();
+      _asetNameControl.text = assetDetail['sub_name'].toString();
+      _asetValueControl.text = assetDetail['sub_value'].toString();
+      _asetVendorControl.text = assetDetail['sub_vendor'].toString();
+      subId = assetDetail['sub_id'].toString();
+    });
   }
 
   void getAssetsList() async {
@@ -66,7 +68,7 @@ class _FormAssetState extends State<FormAsset> {
     });
   }
 
-  void gasSaveAsset() async {
+  Future<void> gasSaveAsset() async {
     Map creds = {
       'sub_id': subId,
       'sub_id_asset': _selectedAsset,
@@ -295,14 +297,15 @@ Widget _textInput({controller, hint, icon, isNumber = false}) {
         border: InputBorder.none,
         hintText: hint,
         hintStyle: TextStyle(
-          color: Colors.grey,
+          color: Colors.black38,
+          height: 1.5,
         ),
         prefixIcon: Icon(
           icon,
-          color: Colors.grey,
+          color: Colors.black38,
         ),
       ),
-      style: TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.black38),
     ),
   );
 }

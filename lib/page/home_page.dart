@@ -2,7 +2,7 @@ import 'package:adr_finance_app/config/pallete.dart';
 import 'package:adr_finance_app/page/convert_page.dart';
 import 'package:adr_finance_app/page/dashboard.dart';
 import 'package:adr_finance_app/page/form_trans.dart';
-import 'package:adr_finance_app/page/login_signup.dart';
+// import 'package:adr_finance_app/page/login_signup.dart';
 // import 'package:adr_finance_app/page/login_signup.dart';
 import 'package:adr_finance_app/page/profile.dart';
 import 'package:adr_finance_app/page/transaction.dart';

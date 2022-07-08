@@ -107,7 +107,6 @@ class Data {
     String token = await storage.read(key: 'token') ?? "";
     try {
       Dio.Response response = await api().post('/transaction/get-by-user', options: Dio.Options(headers: {'Authorization': 'Bearer $token'}));
-      // print(json.decode(response.data.toString()));
       return response.data['data'];
     } catch(e){
       print("ERRROR");

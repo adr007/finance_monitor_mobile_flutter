@@ -1,8 +1,8 @@
 import 'package:adr_finance_app/config/pallete.dart';
 import 'package:adr_finance_app/services/data.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sleek_circular_slider/sleek_circular_slider.dart';
+// import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -32,10 +32,9 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.greenAccent.withOpacity(0.5), Pallete.backgroundColor],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+          image: DecorationImage(
+            image: AssetImage("images/blur1.jpg"),
+            fit: BoxFit.cover,
           ),
       ),
       child: Column(
@@ -72,7 +71,7 @@ class _ProfileState extends State<Profile> {
               Text(
                 _isLoading ? "........." : userData['user_name'],
                 style: TextStyle(
-                  color: Pallete.greenTheme3,
+                  color: Colors.white,
                   fontSize: 20,
                   fontFamily: "SpaceAge",
                 ),
@@ -81,7 +80,7 @@ class _ProfileState extends State<Profile> {
               Text(
                 _isLoading ? "........." : userData['user_email'],
                 style: TextStyle(
-                  color: Colors.grey,
+                  color: Colors.greenAccent,
                   fontSize: 14,
                 ),
               ),
@@ -99,7 +98,7 @@ class _ProfileState extends State<Profile> {
                     width: 290,
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Pallete.greenTheme1,
+                        color: Colors.white,
                         width: 3,
                       ),
                       borderRadius: BorderRadius.circular(40),
@@ -123,7 +122,7 @@ class _ProfileState extends State<Profile> {
                     width: 50,
                     height: 190,
                     decoration: BoxDecoration(
-                      color: Pallete.greenTheme2,
+                      color: Pallete.greenTheme1,
                       borderRadius: BorderRadius.only(
                         topRight: Radius.circular(30),
                         bottomRight: Radius.circular(30),

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 
 Auth auth = Auth();
 
-void _logOut() async {
+Future<void> _logOut() async {
   await auth.forceLogout();
 }
 
@@ -27,8 +27,8 @@ Future<void> main() async {
   final storage = new FlutterSecureStorage();
   String _token = await storage.read(key: 'token') ?? null;
 
-  print("TESS Token");
-  print(_token);
+  // print("TESS Token");
+  // print(_token);
 
   // print("TOKEN from MAIN");
   // print(_token);
